@@ -167,49 +167,50 @@ class AIResumeAnalyzer:
             if PDF2IMAGE_AVAILABLE and PYTESSERACT_AVAILABLE:
                 try:
                     st.info("Attempting OCR for image-based PDF. This may take a moment...")
-                
-                # Check if poppler is installed
-                poppler_path = None
-                if os.name == 'nt':  # Windows
-                    # Try to find poppler in common locations
-                    possible_paths = [
-                        r'C:\poppler\Library\bin',
-                        r'C:\Program Files\poppler\bin',
-                        r'C:\Program Files (x86)\poppler\bin',
-                        r'C:\poppler\bin'
-                    ]
-                    for path in possible_paths:
-                        if os.path.exists(path):
-                            poppler_path = path
-                            st.success(f"Found Poppler at: {path}")
-                            break
                     
-                    if not poppler_path:
-                        st.warning("Poppler not found in common locations. Using default path: C:\\poppler\\Library\\bin")
-                        poppler_path = r'C:\poppler\Library\bin'
-                
-                # Try to convert PDF to images
-                try:
-                    if poppler_path and os.name == 'nt':
-                        images = convert_from_path(temp_path, poppler_path=poppler_path)
-                    else:
-                        images = convert_from_path(temp_path)
+                    # Check if poppler is installed
+                    poppler_path = None
+                    if os.name == 'nt':  # Windows
+                        # Try to find poppler in common locations
+                        possible_paths = [
+                            r'C:\poppler\Library\bin',
+                            r'C:\Program Files\poppler\bin',
+                            r'C:\Program Files (x86)\poppler\bin',
+                            r'C:\poppler\bin'
+                        ]
+                        for path in possible_paths:
+                            if os.path.exists(path):
+                                poppler_path = path
+                                st.success(f"Found Poppler at: {path}")
+                                break
+                        
+                        if not poppler_path:
+                            st.warning("Poppler not found in common locations. Using default path: C:\\poppler\\Library\\bin")
+                            poppler_path = r'C:\poppler\Library\bin'
                     
-                    # Process each image with OCR
-                    ocr_text = ""
-                    for i, image in enumerate(images):
-                        st.info(f"Processing page {i+1} with OCR...")
-                        page_text = pytesseract.image_to_string(image)
-                        ocr_text += page_text + "\n"
-                    
-                    if ocr_text.strip():
-                        os.unlink(temp_path)  # Clean up the temp file
-                        return ocr_text.strip()
-                    else:
-                        st.error("OCR extraction yielded no text. Please check if the PDF contains actual text content.")
-                except Exception as e:
-                    st.error(f"PDF to image conversion failed: {e}")
-                    st.info("OCR processing is not available in this environment.")
+                    # Try to convert PDF to images
+                    try:
+                        if poppler_path and os.name == 'nt':
+                            images = convert_from_path(temp_path, poppler_path=poppler_path)
+                        else:
+                            images = convert_from_path(temp_path)
+                        
+                        # Process each image with OCR
+                        ocr_text = ""
+                        for i, image in enumerate(images):
+                            st.info(f"Processing page {i+1} with OCR...")
+                            page_text = pytesseract.image_to_string(image)
+                            ocr_text += page_text + "\n"
+                        
+                        if ocr_text.strip():
+                            os.unlink(temp_path)  # Clean up the temp file
+                            return ocr_text.strip()
+                        else:
+                            st.error("OCR extraction yielded no text. Please check if the PDF contains actual text content.")
+                    except Exception as e:
+                        st.error(f"PDF to image conversion failed: {e}")
+                        st.info("OCR processing is not available in this environment.")
+                        
                 except Exception as e:
                     st.error(f"OCR processing failed: {e}")
             else:
