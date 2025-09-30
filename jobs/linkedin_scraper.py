@@ -3,15 +3,19 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 import warnings
 warnings.filterwarnings('ignore')
 
-# Import our custom webdriver utility
-from .webdriver_utils import setup_webdriver
+# Optional selenium imports - gracefully handle missing dependencies
+try:
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+    from selenium.common.exceptions import NoSuchElementException
+    from .webdriver_utils import setup_webdriver
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
 
 class LinkedInScraper:
     """Class for scraping job listings from LinkedIn"""
@@ -19,6 +23,8 @@ class LinkedInScraper:
     @staticmethod
     def webdriver_setup():
         """Set up and configure the Chrome webdriver"""
+        if not SELENIUM_AVAILABLE:
+            raise ImportError("Selenium is not available")
         # Use our custom webdriver setup utility with multiple fallback options
         return setup_webdriver()
 
@@ -591,6 +597,11 @@ class LinkedInScraper:
     @staticmethod
     def main(show_title=True):
         """Main function to run the LinkedIn job scraper"""
+        if not SELENIUM_AVAILABLE:
+            st.error("🚫 LinkedIn Scraper Not Available")
+            st.warning("Selenium dependencies are not installed in this environment.")
+            return
+            
         # Initialize driver to None
         driver = None
         
@@ -658,5 +669,17 @@ class LinkedInScraper:
 
 def render_linkedin_scraper():
     """Render the LinkedIn job scraper interface"""
+    if not SELENIUM_AVAILABLE:
+        st.error("🚫 LinkedIn Scraper Not Available")
+        st.warning("Selenium dependencies are not installed in this environment.")
+        st.info("This feature is disabled for cloud deployment compatibility.")
+        st.markdown("""
+        **For local development:**
+        ```bash
+        pip install selenium webdriver-manager chromedriver-autoinstaller
+        ```
+        """)
+        return
+    
     # Don't show the title again, as it's already shown in the job_search.py file
     LinkedInScraper.main(show_title=False)

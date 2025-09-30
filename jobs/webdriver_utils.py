@@ -5,9 +5,15 @@ import platform
 import tempfile
 import subprocess
 import streamlit as st
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+
+# Optional selenium imports - gracefully handle missing dependencies
+try:
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.chrome.options import Options
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
 
 # Try to import various webdriver managers with fallbacks
 try:
@@ -131,6 +137,8 @@ def setup_webdriver():
     Returns:
         webdriver.Chrome or None: Configured Chrome webdriver or None if setup fails
     """
+    if not SELENIUM_AVAILABLE:
+        raise ImportError("Selenium is not available")
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
