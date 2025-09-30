@@ -2070,9 +2070,7 @@ class ResumeApp:
 
                         # Show results based on document type
                         if analysis.get('document_type') != 'resume':
-                            st.error(
-    f"⚠️ This appears to be a {
-        analysis['document_type']} document, not a resume!")
+                            st.error(f"⚠️ This appears to be a {analysis['document_type']} document, not a resume!")
                             st.warning(
                                 "Please upload a proper resume for ATS analysis.")
                             return
