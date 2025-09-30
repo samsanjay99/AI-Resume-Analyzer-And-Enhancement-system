@@ -1,36 +1,39 @@
-streamlit
+# Core Streamlit dependencies
+streamlit>=1.28.0
 streamlit-option-menu
 streamlit-lottie
 streamlit-extras
-streamlit-custom-notification-box
+
+# Document processing
 python-docx
-pandas
-plotly
-pillow
-pycryptodome==3.20.0
-python-dotenv
-pdfminer.six==20221105
-nltk
-scikit-learn
-sqlalchemy
-openpyxl
-requests
-spacy
 pypdf==4.2.0
-selenium
-numpy
-webdriver-manager
-chromedriver-autoinstaller
-google-generativeai
-pdf2image
-pytesseract
 pdfplumber
-reportlab
-openrouter
-openai
-docx2pdf
 docx2txt
-python-pptx
+
+# Data processing
+pandas
+numpy
+plotly
 matplotlib
 seaborn
-pypdf2
+
+# AI/ML dependencies
+google-generativeai
+openai
+nltk
+scikit-learn
+
+# Utilities
+pillow
+python-dotenv
+requests
+sqlalchemy
+openpyxl
+reportlab
+
+# PDF processing (lightweight)
+pdfminer.six==20221105
+
+# Note: Heavy dependencies removed for cloud deployment compatibility
+# If you need OCR or browser automation, install locally:
+# pdf2image, pytesseract, selenium, webdriver-manager, chromedriver-autoinstaller

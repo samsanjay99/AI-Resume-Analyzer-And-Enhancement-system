@@ -3,14 +3,25 @@ import streamlit as st
 from dotenv import load_dotenv
 import google.generativeai as genai
 import pdfplumber
-from pdf2image import convert_from_path
-import pytesseract
 import tempfile
 import requests
 import json
 import math
 import re
 from openai import OpenAI
+
+# Optional imports for OCR (not available in all cloud environments)
+try:
+    from pdf2image import convert_from_path
+    PDF2IMAGE_AVAILABLE = True
+except ImportError:
+    PDF2IMAGE_AVAILABLE = False
+
+try:
+    import pytesseract
+    PYTESSERACT_AVAILABLE = True
+except ImportError:
+    PYTESSERACT_AVAILABLE = False
 
 
 class AIResumeAnalyzer:
@@ -152,13 +163,10 @@ class AIResumeAnalyzer:
             # If we got here, both extraction methods failed
             st.warning("Standard text extraction methods failed. Your PDF might be image-based or scanned.")
             
-            # Try OCR as a last resort
-            try:
-                # Check if we can import the required OCR libraries
-                import pytesseract
-                from pdf2image import convert_from_path
-                
-                st.info("Attempting OCR for image-based PDF. This may take a moment...")
+            # Try OCR as a last resort (if available)
+            if PDF2IMAGE_AVAILABLE and PYTESSERACT_AVAILABLE:
+                try:
+                    st.info("Attempting OCR for image-based PDF. This may take a moment...")
                 
                 # Check if poppler is installed
                 poppler_path = None
@@ -201,17 +209,14 @@ class AIResumeAnalyzer:
                         st.error("OCR extraction yielded no text. Please check if the PDF contains actual text content.")
                 except Exception as e:
                     st.error(f"PDF to image conversion failed: {e}")
-                    st.info("If you're on Windows, make sure Poppler is installed and in your PATH.")
-                    st.info("Download Poppler from: https://github.com/oschwartz10612/poppler-windows/releases/")
-            except ImportError as e:
-                st.error(f"OCR libraries not available: {e}")
-                st.info("Please install the required OCR libraries:")
+                    st.info("OCR processing is not available in this environment.")
+                except Exception as e:
+                    st.error(f"OCR processing failed: {e}")
+            else:
+                st.warning("OCR libraries not available in this environment.")
+                st.info("For local installations, you can install OCR support with:")
                 st.code("pip install pytesseract pdf2image")
-                st.info("For Windows, also download and install:")
-                st.info("1. Tesseract OCR: https://github.com/UB-Mannheim/tesseract/wiki")
-                st.info("2. Poppler: https://github.com/oschwartz10612/poppler-windows/releases/")
-            except Exception as e:
-                st.error(f"OCR processing failed: {e}")
+                st.info("Note: OCR requires additional system dependencies (Tesseract, Poppler)")
         
         except Exception as e:
             st.error(f"PDF processing failed: {e}")

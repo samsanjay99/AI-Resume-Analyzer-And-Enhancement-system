@@ -1,0 +1,36 @@
+# Optimized requirements for cloud deployment
+streamlit>=1.28.0
+streamlit-option-menu
+streamlit-lottie
+streamlit-extras
+python-docx
+pandas
+plotly
+pillow
+python-dotenv
+pdfminer.six==20221105
+nltk
+scikit-learn
+sqlalchemy
+openpyxl
+requests
+pypdf==4.2.0
+google-generativeai
+pdfplumber
+reportlab
+openai
+docx2txt
+matplotlib
+seaborn
+
+# Note: Removed heavy dependencies that might cause deployment issues:
+# - selenium (not needed for cloud deployment)
+# - webdriver-manager (not needed for cloud deployment)  
+# - chromedriver-autoinstaller (not needed for cloud deployment)
+# - pdf2image (requires poppler)
+# - pytesseract (requires tesseract)
+# - spacy (large model downloads)
+# - docx2pdf (conversion issues)
+# - python-pptx (not essential)
+# - pycryptodome (potential security issues)
+# - pypdf2 (deprecated, using pypdf instead)

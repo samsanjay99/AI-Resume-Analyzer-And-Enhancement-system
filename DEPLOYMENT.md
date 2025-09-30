@@ -5,10 +5,13 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
 ## 🚀 **Recommended Deployment Platforms**
 
 ### 1. **Railway** (Recommended) 🚂
+
 **Why Railway?** Fast, simple, and handles Python apps perfectly with automatic HTTPS.
 
 #### Steps:
+
 1. **Connect GitHub:**
+
    ```bash
    # Push your code to GitHub first
    git add .
@@ -17,6 +20,7 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```
 
 2. **Deploy on Railway:**
+
    - Go to [railway.app](https://railway.app)
    - Click "Start a New Project"
    - Select "Deploy from GitHub repo"
@@ -25,6 +29,7 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
 
 3. **Environment Variables:**
    Add these in Railway dashboard:
+
    ```
    GOOGLE_API_KEY=AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU
    PORT=8501
@@ -36,15 +41,19 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```
 
 ### 2. **Render** (Great Alternative) 🎨
+
 **Why Render?** Professional hosting with great performance and easy setup.
 
 #### Steps:
+
 1. **Create Web Service:**
+
    - Go to [render.com](https://render.com)
    - Click "New" → "Web Service"
    - Connect your GitHub repository
 
 2. **Configuration:**
+
    ```
    Build Command: pip install -r requirements.txt
    Start Command: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true
@@ -57,21 +66,26 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```
 
 ### 3. **Heroku** (Classic Choice) 🟣
+
 **Why Heroku?** Reliable, well-documented, great for production apps.
 
 #### Steps:
+
 1. **Install Heroku CLI:**
+
    ```bash
    # Download from https://devcenter.heroku.com/articles/heroku-cli
    ```
 
 2. **Create Heroku App:**
+
    ```bash
    heroku create your-resume-analyzer
    heroku config:set GOOGLE_API_KEY=AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU
    ```
 
 3. **Create Procfile:**
+
    ```bash
    echo "web: streamlit run app.py --server.port=\$PORT --server.address=0.0.0.0" > Procfile
    ```
@@ -84,10 +98,13 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```
 
 ### 4. **DigitalOcean App Platform** 💧
+
 **Why DigitalOcean?** Great performance, competitive pricing, developer-friendly.
 
 #### Steps:
+
 1. **Create App:**
+
    - Go to [cloud.digitalocean.com](https://cloud.digitalocean.com)
    - Click "Create" → "Apps"
    - Connect your GitHub repository
@@ -96,25 +113,28 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```yaml
    name: smart-resume-analyzer
    services:
-   - name: web
-     source_dir: /
-     github:
-       repo: your-username/Smart-AI-Resume-Analyzer
-       branch: main
-     run_command: streamlit run app.py --server.port=8080 --server.address=0.0.0.0
-     environment_slug: python
-     instance_count: 1
-     instance_size_slug: basic-xxs
-     envs:
-     - key: GOOGLE_API_KEY
-       value: AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU
+     - name: web
+       source_dir: /
+       github:
+         repo: your-username/Smart-AI-Resume-Analyzer
+         branch: main
+       run_command: streamlit run app.py --server.port=8080 --server.address=0.0.0.0
+       environment_slug: python
+       instance_count: 1
+       instance_size_slug: basic-xxs
+       envs:
+         - key: GOOGLE_API_KEY
+           value: AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU
    ```
 
 ### 5. **Google Cloud Run** ☁️
+
 **Why Google Cloud?** Serverless, scales automatically, pay-per-use.
 
 #### Steps:
+
 1. **Create Dockerfile:**
+
    ```dockerfile
    FROM python:3.9-slim
 
@@ -143,11 +163,13 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
 ### Required Files for Deployment
 
 1. **Create `runtime.txt` (for some platforms):**
+
    ```bash
    echo "python-3.9.18" > runtime.txt
    ```
 
 2. **Update `requirements.txt`:**
+
    ```txt
    streamlit
    streamlit-option-menu
@@ -179,6 +201,7 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```
 
 3. **Create `.streamlit/config.toml`:**
+
    ```toml
    [server]
    headless = true
@@ -194,7 +217,9 @@ This guide provides multiple deployment options for the Smart AI Resume Analyzer
    ```
 
 ### Environment Variables Setup
+
 For all platforms, you'll need these environment variables:
+
 ```bash
 GOOGLE_API_KEY=AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU
 PORT=8501  # or 8080 depending on platform
@@ -203,6 +228,7 @@ PORT=8501  # or 8080 depending on platform
 ## 💻 **Local Development**
 
 ### Quick Start
+
 ```bash
 # Clone the repository
 git clone https://github.com/your-username/Smart-AI-Resume-Analyzer.git
@@ -224,6 +250,7 @@ streamlit run app.py
 ### **Method 1: Web Interface (Recommended)**
 
 1. **Prepare Your Repository:**
+
    ```bash
    # Make sure all files are committed
    git add .
@@ -232,15 +259,18 @@ streamlit run app.py
    ```
 
 2. **Go to Render:**
+
    - Visit [render.com](https://render.com)
    - Sign up/Login with your GitHub account
 
 3. **Create New Web Service:**
+
    - Click **"New"** → **"Web Service"**
    - Connect your GitHub repository
    - Select your `Smart-AI-Resume-Analyzer` repository
 
 4. **Configure Service:**
+
    ```
    Name: smart-resume-analyzer
    Region: Oregon (US West) or closest to you
@@ -252,6 +282,7 @@ streamlit run app.py
    ```
 
 5. **Add Environment Variables:**
+
    - Click **"Advanced"**
    - Add environment variable:
      ```
@@ -267,6 +298,7 @@ streamlit run app.py
 ### **Method 2: Render CLI**
 
 1. **Install Render CLI:**
+
    ```bash
    npm install -g @render/cli
    # or
@@ -311,33 +343,61 @@ streamlit run app.py
 
 ## 🐳 **Docker Deployment**
 
-### **Local Docker:**
+### **Option 1: Lightweight Cloud Docker (Recommended)**
 ```bash
-# Build and run
+# Use the cloud-optimized Dockerfile
+docker build -f Dockerfile.cloud -t smart-resume-analyzer .
+docker run -p 8501:8501 -e GOOGLE_API_KEY=AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU smart-resume-analyzer
+```
+
+### **Option 2: Full Docker (with OCR support)**
+```bash
+# Use the full Dockerfile (requires more system dependencies)
 docker build -t smart-resume-analyzer .
 docker run -p 8501:8501 -e GOOGLE_API_KEY=AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU smart-resume-analyzer
 ```
 
-### **Docker Hub:**
+### **Docker Hub Deployment:**
 ```bash
-# Build and push to Docker Hub
-docker build -t yourusername/smart-resume-analyzer .
+# Build and push to Docker Hub (lightweight version)
+docker build -f Dockerfile.cloud -t yourusername/smart-resume-analyzer .
 docker push yourusername/smart-resume-analyzer
 ```
+
+### **Fix Docker Build Issues:**
+If you encounter Docker build errors:
+
+1. **Use the lightweight version:**
+   ```bash
+   docker build -f Dockerfile.cloud -t smart-resume-analyzer .
+   ```
+
+2. **Clear Docker cache:**
+   ```bash
+   docker system prune -a
+   ```
+
+3. **Check logs for specific errors:**
+   ```bash
+   docker build --no-cache -f Dockerfile.cloud -t smart-resume-analyzer .
+   ```
 
 ## 🔧 **Troubleshooting**
 
 ### **Common Issues:**
 
 1. **Port Issues:**
+
    - Make sure your app uses `$PORT` environment variable
    - Default ports: Render (10000), Heroku (dynamic), Railway (dynamic)
 
 2. **Memory Issues:**
+
    - Upgrade to paid plan if needed
    - Optimize your requirements.txt
 
 3. **Build Failures:**
+
    - Check Python version compatibility
    - Ensure all dependencies are in requirements.txt
 
@@ -348,10 +408,12 @@ docker push yourusername/smart-resume-analyzer
 ### **Performance Tips:**
 
 1. **Optimize Requirements:**
+
    - Remove unused packages
    - Use specific versions
 
 2. **Enable Caching:**
+
    - Use `@st.cache_data` for expensive operations
    - Cache model loading
 
@@ -361,23 +423,25 @@ docker push yourusername/smart-resume-analyzer
 
 ## 📊 **Platform Comparison**
 
-| Platform | Free Tier | Performance | Ease of Use | Custom Domain |
-|----------|-----------|-------------|-------------|---------------|
-| **Render** | ✅ 750hrs/month | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ |
-| **Railway** | ✅ $5 credit | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ |
-| **Heroku** | ✅ 550hrs/month | ⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ |
-| **DigitalOcean** | ❌ Paid only | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ✅ |
+| Platform         | Free Tier       | Performance | Ease of Use | Custom Domain |
+| ---------------- | --------------- | ----------- | ----------- | ------------- |
+| **Render**       | ✅ 750hrs/month | ⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐  | ✅            |
+| **Railway**      | ✅ $5 credit    | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐  | ✅            |
+| **Heroku**       | ✅ 550hrs/month | ⭐⭐⭐      | ⭐⭐⭐⭐    | ✅            |
+| **DigitalOcean** | ❌ Paid only    | ⭐⭐⭐⭐⭐  | ⭐⭐⭐      | ✅            |
 
 ## 🎉 **Post-Deployment**
 
 After successful deployment:
 
 1. **Test Your App:**
+
    - Upload a resume
    - Try different AI models
    - Test portfolio generation
 
 2. **Monitor Performance:**
+
    - Check response times
    - Monitor resource usage
    - Review error logs
@@ -387,4 +451,4 @@ After successful deployment:
    - Configure DNS settings
    - Enable HTTPS
 
-**Your Smart AI Resume Analyzer is now live and ready to help users! 🚀** 
+**Your Smart AI Resume Analyzer is now live and ready to help users! 🚀**
