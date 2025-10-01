@@ -1,7 +1,7 @@
 """
 File utility functions for resume processing
 """
-import PyPDF2
+import pypdf as PyPDF2
 import io
 from docx import Document
 import tempfile
