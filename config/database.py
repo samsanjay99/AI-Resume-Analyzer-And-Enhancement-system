@@ -84,6 +84,9 @@ def init_database():
     
     conn.commit()
     conn.close()
+    
+    # Create default admin if none exists
+    create_default_admin()
 
 def save_resume_data(data):
     """Save resume data to database"""
@@ -283,6 +286,113 @@ def add_admin(email, password):
     except Exception as e:
         print(f"Error adding admin: {str(e)}")
         return False
+    finally:
+        conn.close()
+
+def create_default_admin():
+    """Create default admin if no admin exists"""
+    conn = get_database_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Check if any admin exists
+        cursor.execute('SELECT COUNT(*) FROM admin')
+        admin_count = cursor.fetchone()[0]
+        
+        if admin_count == 0:
+            # Create default admin
+            cursor.execute('INSERT INTO admin (email, password) VALUES (?, ?)', 
+                         ('sanjay@main.com', 'sanjay2026'))
+            conn.commit()
+            print("Default admin created: sanjay@main.com")
+            return True
+        return False
+    except Exception as e:
+        print(f"Error creating default admin: {str(e)}")
+        return False
+    finally:
+        conn.close()
+
+def get_all_resume_data():
+    """Get all resume data for admin dashboard"""
+    conn = get_database_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('''
+            SELECT rd.*, ra.score, ra.ats_score, ra.predicted_role, ra.experience_level,
+                   ra.analysis_date, ra.model_used
+            FROM resume_data rd
+            LEFT JOIN resume_analysis ra ON rd.id = ra.resume_id
+            ORDER BY rd.created_at DESC
+        ''')
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Error getting resume data: {str(e)}")
+        return []
+    finally:
+        conn.close()
+
+def get_admin_analytics():
+    """Get analytics data for admin dashboard"""
+    conn = get_database_connection()
+    cursor = conn.cursor()
+    
+    try:
+        analytics = {}
+        
+        # Total users
+        cursor.execute('SELECT COUNT(DISTINCT email) FROM resume_data')
+        analytics['total_users'] = cursor.fetchone()[0]
+        
+        # Total resumes
+        cursor.execute('SELECT COUNT(*) FROM resume_data')
+        analytics['total_resumes'] = cursor.fetchone()[0]
+        
+        # Average score
+        cursor.execute('SELECT AVG(score) FROM resume_analysis WHERE score > 0')
+        result = cursor.fetchone()[0]
+        analytics['avg_score'] = round(result, 2) if result else 0
+        
+        # Role distribution
+        cursor.execute('''
+            SELECT predicted_role, COUNT(*) as count 
+            FROM resume_analysis 
+            WHERE predicted_role IS NOT NULL 
+            GROUP BY predicted_role 
+            ORDER BY count DESC
+        ''')
+        analytics['role_distribution'] = cursor.fetchall()
+        
+        # Experience level distribution
+        cursor.execute('''
+            SELECT experience_level, COUNT(*) as count 
+            FROM resume_analysis 
+            WHERE experience_level IS NOT NULL 
+            GROUP BY experience_level
+        ''')
+        analytics['experience_distribution'] = cursor.fetchall()
+        
+        # Score distribution
+        cursor.execute('''
+            SELECT 
+                CASE 
+                    WHEN score >= 80 THEN 'Excellent (80-100)'
+                    WHEN score >= 60 THEN 'Good (60-79)'
+                    WHEN score >= 40 THEN 'Average (40-59)'
+                    ELSE 'Needs Improvement (0-39)'
+                END as score_range,
+                COUNT(*) as count
+            FROM resume_analysis 
+            WHERE score > 0
+            GROUP BY score_range
+        ''')
+        analytics['score_distribution'] = cursor.fetchall()
+        
+        return analytics
+    except Exception as e:
+        print(f"Error getting analytics: {str(e)}")
+        return {}
     finally:
         conn.close()
 

@@ -304,25 +304,76 @@ streamlit run app.py
 
 ## Admin Login Credentials
 
-### 🔹 Default Login Credentials (CHANGE THESE):
+### 🔹 Admin Login Credentials:
 
 - **Username:**
 
 ```python3
-admin@example.com
+sanjay@main.com
 ```
 
 - **Password:**
 
 ```python3
-admin123
+sanjay2026
 ```
 
-⚠️ **SECURITY WARNING**: These are default credentials for testing only. Change them immediately in production!
+⚠️ **SECURITY NOTE**: These credentials are automatically created when the app starts for the first time.
 
 ### 🔹 Admin Panel Access:
 
 - The **Admin Section** will be visible **only after login**, right below the **Dashboard** section.
+
+## 👑 Admin Features & Capabilities
+
+### 📊 **Analytics Overview**
+- **System Metrics**: Total users, resumes, average scores
+- **Quick Stats**: Top predicted roles and distributions
+- **Real-time Status**: Active admin monitoring
+
+### 👥 **User Data Management**
+- **Complete User Database**: View all applicant data in tabular format
+- **Advanced Filtering**: Filter by role, experience level, score
+- **Data Export**: Download user data as CSV files
+- **User Insights**: Track user registration patterns
+
+### 📄 **Resume File Management**
+- **File Repository**: View all uploaded PDF resumes in organized folder
+- **File Details**: See file sizes and upload dates
+- **Download Access**: Download any uploaded resume file
+- **Storage Management**: Monitor storage usage
+
+### 💬 **Feedback & Ratings System**
+- **User Feedback**: Collect and view user satisfaction ratings
+- **Feature Requests**: Track improvement suggestions
+- **Bug Reports**: Monitor and manage reported issues
+- **Rating Analytics**: Analyze user satisfaction trends
+
+### 📈 **Advanced Analytics & Charts**
+
+#### **Pie Charts Available:**
+- **🎯 Predicted Roles Distribution**: Visual breakdown of job role predictions
+- **💼 Experience Level Distribution**: User experience level analytics
+- **📊 Resume Score Ranges**: Performance distribution (Excellent/Good/Average/Needs Improvement)
+- **⭐ User Ratings**: Satisfaction and feedback ratings
+
+#### **Additional Charts:**
+- **📅 User Registration Timeline**: Daily/monthly user growth
+- **🏙️ Geographic Distribution**: Users by city, state, country
+- **📈 Score Trends**: Resume quality improvements over time
+- **🔄 Usage Patterns**: Feature usage and engagement metrics
+
+### 🛠️ **Administrative Tools**
+- **Database Management**: Direct access to all stored data
+- **Export Capabilities**: CSV downloads for external analysis
+- **Real-time Monitoring**: Live system status and performance
+- **Security Oversight**: Admin activity logging and tracking
+
+### 🔐 **Security Features**
+- **Secure Login**: Protected admin authentication
+- **Activity Logging**: Track all admin actions
+- **Data Privacy**: Secure handling of user information
+- **Access Control**: Role-based permission system
 
 <!--### Deploy to Streamlit Cloud
 

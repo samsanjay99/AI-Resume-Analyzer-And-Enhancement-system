@@ -26,7 +26,8 @@ from config.job_roles import JOB_ROLES
 from config.database import (
     get_database_connection, save_resume_data, save_analysis_data,
     init_database, verify_admin, log_admin_action, save_ai_analysis_data,
-    get_ai_analysis_stats, reset_ai_analysis_stats, get_detailed_ai_analysis_stats
+    get_ai_analysis_stats, reset_ai_analysis_stats, get_detailed_ai_analysis_stats,
+    get_all_resume_data, get_admin_analytics
 )
 from utils.ai_resume_analyzer import AIResumeAnalyzer
 from utils.resume_builder import ResumeBuilder
@@ -98,6 +99,9 @@ class ResumeApp:
         self.builder = ResumeBuilder()
         self.portfolio_generator = PortfolioGenerator()
         self.job_roles = JOB_ROLES
+        
+        # Initialize database and create default admin
+        init_database()
 
         # Initialize session state
         if 'user_id' not in st.session_state:
@@ -549,7 +553,224 @@ class ResumeApp:
     def render_dashboard(self):
         """Render the dashboard page"""
         self.dashboard_manager.render_dashboard()
+        
+        # Add admin section if logged in
+        if st.session_state.get('is_admin', False):
+            st.markdown("---")
+            self.render_admin_dashboard()
 
+
+    def render_admin_dashboard(self):
+        """Render comprehensive admin dashboard"""
+        import pandas as pd
+        import plotly.express as px
+        import plotly.graph_objects as go
+        from datetime import datetime
+        import os
+        
+        st.markdown("## 👑 Admin Dashboard")
+        st.markdown("*Welcome to the administrative control panel*")
+        
+        # Admin tabs
+        admin_tabs = st.tabs([
+            "📊 Analytics Overview", 
+            "👥 User Data", 
+            "📄 Resume Files", 
+            "💬 Feedback & Ratings",
+            "📈 Detailed Charts"
+        ])
+        
+        # Get admin analytics data
+        analytics = get_admin_analytics()
+        all_resume_data = get_all_resume_data()
+        
+        with admin_tabs[0]:  # Analytics Overview
+            st.subheader("📊 System Overview")
+            
+            # Key metrics
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("Total Users", analytics.get('total_users', 0))
+            with col2:
+                st.metric("Total Resumes", analytics.get('total_resumes', 0))
+            with col3:
+                st.metric("Average Score", f"{analytics.get('avg_score', 0)}%")
+            with col4:
+                st.metric("Admin Status", "Active ✅")
+            
+            # Quick stats
+            if analytics.get('role_distribution'):
+                st.subheader("🎯 Top Predicted Roles")
+                role_df = pd.DataFrame(analytics['role_distribution'], columns=['Role', 'Count'])
+                st.dataframe(role_df.head(10), use_container_width=True)
+        
+        with admin_tabs[1]:  # User Data
+            st.subheader("👥 All User Data")
+            
+            if all_resume_data:
+                # Convert to DataFrame
+                columns = [
+                    'ID', 'Name', 'Email', 'Phone', 'LinkedIn', 'GitHub', 'Portfolio',
+                    'Summary', 'Target Role', 'Target Category', 'Education', 'Experience',
+                    'Projects', 'Skills', 'Template', 'Created At', 'Score', 'ATS Score',
+                    'Predicted Role', 'Experience Level', 'Analysis Date', 'Model Used'
+                ]
+                
+                df = pd.DataFrame(all_resume_data, columns=columns)
+                
+                # Display data with filters
+                st.write(f"**Total Records:** {len(df)}")
+                
+                # Filters
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    if 'Target Role' in df.columns and not df['Target Role'].isna().all():
+                        role_filter = st.selectbox("Filter by Role", 
+                                                 ['All'] + list(df['Target Role'].dropna().unique()))
+                    else:
+                        role_filter = 'All'
+                
+                with col2:
+                    if 'Experience Level' in df.columns and not df['Experience Level'].isna().all():
+                        exp_filter = st.selectbox("Filter by Experience", 
+                                                ['All'] + list(df['Experience Level'].dropna().unique()))
+                    else:
+                        exp_filter = 'All'
+                
+                with col3:
+                    score_filter = st.slider("Minimum Score", 0, 100, 0)
+                
+                # Apply filters
+                filtered_df = df.copy()
+                if role_filter != 'All':
+                    filtered_df = filtered_df[filtered_df['Target Role'] == role_filter]
+                if exp_filter != 'All':
+                    filtered_df = filtered_df[filtered_df['Experience Level'] == exp_filter]
+                if score_filter > 0:
+                    filtered_df = filtered_df[filtered_df['Score'] >= score_filter]
+                
+                # Display filtered data
+                st.dataframe(filtered_df, use_container_width=True)
+                
+                # Download CSV
+                csv = filtered_df.to_csv(index=False)
+                st.download_button(
+                    label="📥 Download as CSV",
+                    data=csv,
+                    file_name=f"resume_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                    mime="text/csv"
+                )
+            else:
+                st.info("No user data available yet.")
+        
+        with admin_tabs[2]:  # Resume Files
+            st.subheader("📄 Uploaded Resume Files")
+            
+            # Create uploads directory if it doesn't exist
+            uploads_dir = "uploads"
+            if not os.path.exists(uploads_dir):
+                os.makedirs(uploads_dir)
+                st.info("Created uploads directory for future file storage.")
+            
+            # List uploaded files
+            try:
+                files = os.listdir(uploads_dir)
+                pdf_files = [f for f in files if f.lower().endswith('.pdf')]
+                
+                if pdf_files:
+                    st.write(f"**Found {len(pdf_files)} PDF files:**")
+                    
+                    for i, file in enumerate(pdf_files):
+                        col1, col2, col3 = st.columns([3, 1, 1])
+                        
+                        with col1:
+                            st.write(f"📄 {file}")
+                        
+                        with col2:
+                            file_path = os.path.join(uploads_dir, file)
+                            file_size = os.path.getsize(file_path)
+                            st.write(f"{file_size / 1024:.1f} KB")
+                        
+                        with col3:
+                            with open(file_path, "rb") as f:
+                                st.download_button(
+                                    "⬇️ Download",
+                                    f.read(),
+                                    file_name=file,
+                                    mime="application/pdf",
+                                    key=f"download_{i}"
+                                )
+                else:
+                    st.info("No PDF files found in uploads directory.")
+                    st.write("💡 **Note:** Resume files will appear here when users upload them for analysis.")
+            
+            except Exception as e:
+                st.error(f"Error accessing uploads directory: {e}")
+        
+        with admin_tabs[3]:  # Feedback & Ratings
+            st.subheader("💬 User Feedback & Ratings")
+            
+            # This would connect to feedback system
+            st.info("🚧 Feedback system integration coming soon!")
+            st.write("**Planned Features:**")
+            st.write("- User satisfaction ratings")
+            st.write("- Feature feedback")
+            st.write("- Bug reports")
+            st.write("- Improvement suggestions")
+        
+        with admin_tabs[4]:  # Detailed Charts
+            st.subheader("📈 Detailed Analytics Charts")
+            
+            if analytics:
+                # Role Distribution Pie Chart
+                if analytics.get('role_distribution'):
+                    st.subheader("🎯 Predicted Roles Distribution")
+                    role_df = pd.DataFrame(analytics['role_distribution'], columns=['Role', 'Count'])
+                    
+                    fig_roles = px.pie(role_df, values='Count', names='Role', 
+                                     title="Distribution of Predicted Job Roles")
+                    st.plotly_chart(fig_roles, use_container_width=True)
+                
+                # Experience Level Distribution
+                if analytics.get('experience_distribution'):
+                    st.subheader("💼 Experience Level Distribution")
+                    exp_df = pd.DataFrame(analytics['experience_distribution'], columns=['Level', 'Count'])
+                    
+                    fig_exp = px.bar(exp_df, x='Level', y='Count', 
+                                   title="Distribution by Experience Level")
+                    st.plotly_chart(fig_exp, use_container_width=True)
+                
+                # Score Distribution
+                if analytics.get('score_distribution'):
+                    st.subheader("📊 Resume Score Distribution")
+                    score_df = pd.DataFrame(analytics['score_distribution'], columns=['Range', 'Count'])
+                    
+                    fig_score = px.pie(score_df, values='Count', names='Range',
+                                     title="Resume Score Ranges")
+                    st.plotly_chart(fig_score, use_container_width=True)
+                
+                # User Registration Timeline (if we have date data)
+                if all_resume_data:
+                    st.subheader("📅 User Registration Timeline")
+                    df = pd.DataFrame(all_resume_data, columns=[
+                        'ID', 'Name', 'Email', 'Phone', 'LinkedIn', 'GitHub', 'Portfolio',
+                        'Summary', 'Target Role', 'Target Category', 'Education', 'Experience',
+                        'Projects', 'Skills', 'Template', 'Created At', 'Score', 'ATS Score',
+                        'Predicted Role', 'Experience Level', 'Analysis Date', 'Model Used'
+                    ])
+                    
+                    if 'Created At' in df.columns:
+                        df['Created At'] = pd.to_datetime(df['Created At'])
+                        df['Date'] = df['Created At'].dt.date
+                        
+                        daily_users = df.groupby('Date').size().reset_index(name='Count')
+                        
+                        fig_timeline = px.line(daily_users, x='Date', y='Count',
+                                             title="Daily User Registrations")
+                        st.plotly_chart(fig_timeline, use_container_width=True)
+            else:
+                st.info("No analytics data available yet.")
 
     def render_empty_state(self, icon, message):
         """Render an empty state with icon and message"""
