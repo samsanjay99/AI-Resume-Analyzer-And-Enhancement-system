@@ -34,7 +34,7 @@ class AIResumeAnalyzer:
         self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
         
         # Configure A4F API
-        self.a4f_api_key = "ddc-a4f-73b259b67d954d5087f48319b7673747"
+        self.a4f_api_key = os.getenv("A4F_API_KEY")
         self.a4f_base_url = "https://api.a4f.co/v1"
         
         # Initialize A4F client

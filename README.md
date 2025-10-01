@@ -298,7 +298,7 @@ Start the application using Streamlit:
 
 ## Admin Login Credentials
 
-### 🔹 New Login Credentials:
+### 🔹 Default Login Credentials (CHANGE THESE):
    - **Username:**
 ```python3
 admin@example.com
@@ -307,6 +307,8 @@ admin@example.com
 ```python3
 admin123
 ```
+
+⚠️ **SECURITY WARNING**: These are default credentials for testing only. Change them immediately in production!
 
 ### 🔹 Admin Panel Access:
    - The **Admin Section** will be visible **only after login**, right below the **Dashboard** section.
