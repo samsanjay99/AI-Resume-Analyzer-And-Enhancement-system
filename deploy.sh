@@ -13,7 +13,7 @@ deploy_railway() {
     echo "2. Login to Railway: railway login"
     echo "3. Initialize project: railway init"
     echo "4. Set environment variables:"
-    echo "   railway variables set GOOGLE_API_KEY=AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU"
+    echo "   railway variables set GOOGLE_API_KEY=your api key"
     echo "5. Deploy: railway up"
     echo ""
     echo "Or use the web interface at https://railway.app"
