@@ -80,12 +80,12 @@ class ResumeApp:
         if 'is_admin' not in st.session_state:
             st.session_state.is_admin = False
 
-        self.pages = {
+        # Base pages available to all users
+        self.base_pages = {
             "🏠 HOME": self.render_home,
             "🔍 RESUME ANALYZER": self.render_analyzer,
             "📝 RESUME BUILDER": self.render_builder,
             "🌐 PORTFOLIO GENERATOR": self.render_portfolio_generator,
-            "📊 DASHBOARD": self.render_dashboard,
             "🎯 JOB SEARCH": self.render_job_search,
             "💬 FEEDBACK": self.render_feedback_page,
             "ℹ️ ABOUT": self.render_about
@@ -102,6 +102,16 @@ class ResumeApp:
         
         # Initialize database and create default admin
         init_database()
+    
+    def get_available_pages(self):
+        """Get pages available based on user permissions"""
+        pages = self.base_pages.copy()
+        
+        # Add dashboard only if admin is logged in
+        if st.session_state.get('is_admin', False):
+            pages["📊 DASHBOARD"] = self.render_dashboard
+            
+        return pages
 
         # Initialize session state
         if 'user_id' not in st.session_state:
@@ -3805,9 +3815,10 @@ class ResumeApp:
             st.markdown("---")
             
             # Navigation buttons
-            for page_name in self.pages.keys():
+            available_pages = self.get_available_pages()
+            for page_name in available_pages.keys():
                 if st.button(page_name, use_container_width=True):
-                    cleaned_name = page_name.lower().replace(" ", "_").replace("🏠", "").replace("🔍", "").replace("📝", "").replace("📊", "").replace("🎯", "").replace("💬", "").replace("ℹ️", "").strip()
+                    cleaned_name = page_name.lower().replace(" ", "_").replace("🏠", "").replace("🔍", "").replace("📝", "").replace("📊", "").replace("🎯", "").replace("💬", "").replace("ℹ️", "").replace("🌐", "").strip()
                     st.session_state.page = cleaned_name
                     st.rerun()
 
@@ -3818,7 +3829,13 @@ class ResumeApp:
             # Admin Login/Logout section at bottom
             if st.session_state.get('is_admin', False):
                 st.success(f"Logged in as: {st.session_state.get('current_admin_email')}")
-                if st.button("Logout", key="logout_button"):
+                
+                # Add Dashboard button for admin
+                if st.button("📊 Admin Dashboard", key="admin_dashboard_button", use_container_width=True):
+                    st.session_state.page = 'dashboard'
+                    st.rerun()
+                
+                if st.button("Logout", key="logout_button", use_container_width=True):
                     try:
                         log_admin_action(st.session_state.get('current_admin_email'), "logout")
                         st.session_state.is_admin = False
@@ -3855,13 +3872,16 @@ class ResumeApp:
         # Get current page and render it
         current_page = st.session_state.get('page', 'home')
         
+        # Get available pages dynamically
+        available_pages = self.get_available_pages()
+        
         # Create a mapping of cleaned page names to original names
-        page_mapping = {name.lower().replace(" ", "_").replace("🏠", "").replace("🔍", "").replace("📝", "").replace("📊", "").replace("🎯", "").replace("💬", "").replace("ℹ️", "").strip(): name 
-                       for name in self.pages.keys()}
+        page_mapping = {name.lower().replace(" ", "_").replace("🏠", "").replace("🔍", "").replace("📝", "").replace("📊", "").replace("🎯", "").replace("💬", "").replace("ℹ️", "").replace("🌐", "").strip(): name 
+                       for name in available_pages.keys()}
         
         # Render the appropriate page
         if current_page in page_mapping:
-            self.pages[page_mapping[current_page]]()
+            available_pages[page_mapping[current_page]]()
         else:
             # Default to home page if invalid page
             self.render_home()
