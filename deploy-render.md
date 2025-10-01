@@ -44,7 +44,7 @@ Start Command: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
 3. Add:
    ```
    Key: GOOGLE_API_KEY
-   Value: AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU
+   Value: your api key
    ```
 
 ### **Step 6: Deploy**
