@@ -1813,20 +1813,46 @@ class ResumeApp:
         """, unsafe_allow_html=True)
 
         # Profile Section
-
-
-
-
+        st.markdown(f"""
+            <div class="profile-section">
+                <img src="{image_base64 if image_base64 else 'https://avatars.githubusercontent.com/samsanjay99'}"
+                     alt="Sanjay Kumar CP"
+                     class="profile-image"
+                     onerror="this.onerror=null; this.src='https://avatars.githubusercontent.com/samsanjay99';">
+                <h2 class="profile-name">Sanjay Kumar CP (samsanjay99)</h2>
+                <p class="profile-title">AI/ML Developer & Resume Optimization Expert</p>
+                <div class="social-links">
+                    <a href="https://github.com/samsanjay99" class="social-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/sanjay-kumar-cp-174198329" class="social-link" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="mailto:sanjaykumarcp9900@gmail.com" class="social-link" target="_blank">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+                <p class="bio-text">
+                    Hello! I'm Sanjay Kumar CP, a passionate AI/ML developer specializing in intelligent resume optimization.
+                    I enhanced Smart Resume AI to provide cutting-edge multi-model analysis and automated portfolio generation.
+                    With expertise in machine learning and career development, I've designed this platform to revolutionize
+                    how professionals showcase their skills and advance their careers through AI-powered insights.
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
         # Vision Section
         st.markdown("""
             <div class="vision-section">
                 <i class="fas fa-lightbulb vision-icon"></i>
-                <h2 class="vision-title">Our Vision</h2>
+                <h2 class="vision-title">Our Vision & Innovation</h2>
                 <p class="vision-text">
-                    "Smart Resume AI represents my vision of democratizing career advancement through technology.
-                    By combining cutting-edge AI with intuitive design, this platform empowers job seekers at
-                    every career stage to showcase their true potential and stand out in today's competitive job market."
+                    "Smart Resume AI represents the future of career advancement through multi-model AI technology.
+                    Our platform features multiple AI models (Google Gemini, GPT-5 Nano, Llama 3.2, Mistral Nemo, and more)
+                    providing diverse perspectives on resume optimization. Beyond analysis, we offer automated portfolio
+                    generation that transforms your resume into a professional web portfolio instantly. This comprehensive
+                    approach empowers job seekers to not just optimize their resumes, but create a complete digital presence
+                    that stands out in today's competitive job market."
                 </p>
             </div>
         """, unsafe_allow_html=True)
@@ -1835,24 +1861,51 @@ class ResumeApp:
         st.markdown("""
             <div class="features-grid">
                 <div class="feature-card">
-                    <i class="fas fa-robot feature-icon"></i>
-                    <h3 class="feature-title">AI-Powered Analysis</h3>
+                    <i class="fas fa-brain feature-icon"></i>
+                    <h3 class="feature-title">Multi-Model AI Analysis</h3>
                     <p class="feature-description">
-                        Advanced AI algorithms provide detailed insights and suggestions to optimize your resume for maximum impact.
+                        Choose from 8+ AI models including Google Gemini, GPT-5 Nano, Llama 3.2, Mistral Nemo, and more.
+                        Each model provides unique insights for comprehensive resume optimization.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-globe feature-icon"></i>
+                    <h3 class="feature-title">Automated Portfolio Generation</h3>
+                    <p class="feature-description">
+                        Transform your resume into a stunning web portfolio instantly. Generate professional websites
+                        with modern designs, responsive layouts, and downloadable packages.
                     </p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-chart-line feature-icon"></i>
-                    <h3 class="feature-title">Data-Driven Insights</h3>
+                    <h3 class="feature-title">Advanced Analytics</h3>
                     <p class="feature-description">
-                        Make informed decisions with our analytics-based recommendations and industry insights.
+                        Get detailed ATS scores, keyword optimization, and data-driven insights to maximize your
+                        resume's effectiveness across different industries and roles.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-pdf feature-icon"></i>
+                    <h3 class="feature-title">Smart Document Processing</h3>
+                    <p class="feature-description">
+                        Upload PDF or DOCX files with advanced text extraction, OCR support for scanned documents,
+                        and intelligent content parsing for accurate analysis.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-download feature-icon"></i>
+                    <h3 class="feature-title">Export & Generate</h3>
+                    <p class="feature-description">
+                        Download detailed PDF reports, generate enhanced resumes, and export complete portfolio
+                        packages ready for deployment and sharing.
                     </p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-shield-alt feature-icon"></i>
-                    <h3 class="feature-title">Privacy First</h3>
+                    <h3 class="feature-title">Privacy & Security</h3>
                     <p class="feature-description">
-                        Your data security is our priority. We ensure your information is always protected and private.
+                        Your data security is our priority. All processing is secure, with no permanent storage
+                        of your personal information and complete privacy protection.
                     </p>
                 </div>
             </div>
