@@ -2,7 +2,7 @@
 runtime: python39
 
 env_variables:
-  GOOGLE_API_KEY: "AIzaSyDorhD_LnZUS5D2zNE9fQ-vP0FbxaxC_qU"
+  GOOGLE_API_KEY: "your api key"
 
 automatic_scaling:
   min_instances: 1
